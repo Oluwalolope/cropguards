@@ -25,9 +25,11 @@ const LoginPage = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    
+    const name = e.target.name;
     // Clear error for this field
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: "" });
+    if (errors) {
+      setErrors({ ...errors, [name]: "" });
     }
   };
 

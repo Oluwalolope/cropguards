@@ -86,7 +86,7 @@ const Testimonials = () => {
               >
                 {/* Rating */}
                 <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((testimony, index) => (
+                  {[...Array(testimonial.rating)].map((_, index) => (
                     <Star key={index} className="w-5 h-5 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
@@ -134,7 +134,7 @@ const Testimonials = () => {
 
             {/* Dots */}
             <div className="flex gap-2">
-              {testimonials.map((testimony, index) => (
+              {testimonials.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}

@@ -39,7 +39,7 @@ const ForgotPasswordPage = () => {
       <header className="bg-white border-b border-gray-100">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Logo darkBackground={false} />
+            <Logo />
           </div>
         </nav>
       </header>
