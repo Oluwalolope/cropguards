@@ -17,12 +17,12 @@ const Header = () => {
       href: "/#hero",
     },
     {
-      name: "How It Works",
-      href: "/#how-it-works",
+      name: "Features",
+      href: "/#features",
     },
     {
-      name: "Become a Seller",
-      href: "/#become-a-seller",
+      name: "Pricing",
+      href: "/#pricing",
     },
     {
       name: "FAQ",
@@ -31,10 +31,10 @@ const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Logo darkBackground={false} />
+          <Logo />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
@@ -48,12 +48,12 @@ const Header = () => {
               </a>
             ))}
             <Link to='/login'>
-              <button className="h-12 px-8 rounded-md bg-white text-black hover:bg-neutral-400/10 cursor-pointer">
+              <button className="h-12 px-8 rounded-md text-gray-700 hover:text-primary-clr transition-colors cursor-pointer">
                 Login
               </button>
             </Link>
-            <Link to='/register?userType=buyer'>
-              <button className="h-12 px-8 rounded-md bg-black text-white hover:bg-black/80 cursor-pointer">
+            <Link to='/register'>
+              <button className="h-12 bg-[#3BAA64] hover:bg-[#329955] text-white px-6 py-2 rounded-full transition-all duration-300 cursor-pointer">
                 Get Started
               </button>
             </Link>
@@ -83,7 +83,7 @@ const Header = () => {
                   <a
                     key={index}
                     href={nav_link.href}
-                    className="text-gray-600 hover:text-gray-900 transition-colors py-2"
+                    className="text-gray-700 hover:text-primary-clr transition-colors py-2"
                     onClick={handleClick}
                   >
                     {nav_link.name}
@@ -91,10 +91,10 @@ const Header = () => {
                 ))}
                 <div className="flex flex-col gap-6 pt-2">
                   <Link to='/login'>
-                    <button className="w-full">Login</button>
+                    <button className="w-full text-gray-700 hover:text-primary-clr transition-colors">Login</button>
                   </Link>
-                  <Link to='/register?userType=buyer'>
-                    <button className="w-full bg-black text-white rounded-md py-2 px-6">
+                  <Link to='/register'>
+                    <button className="w-full bg-[#3BAA64] hover:bg-[#329955] text-white px-6 py-2 rounded-full transition-all duration-300">
                       Get Started
                     </button>
                   </Link>

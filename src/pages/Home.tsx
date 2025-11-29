@@ -1,20 +1,28 @@
-import Features from "../components/Features";
+import KeyFeatures from "../components/KeyFeatures";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
-import Stats from "../components/Stats";
-import { StoreOwners } from "../components/StoreOwners";
+import WhyCropGuards from "../components/WhyCropGuards";
+import WhoIsItFor from "../components/WhoIsItFor";
+import Testimonials from "../components/Testimonials";
+import Pricing from "../components/Pricing";
+import FrequentlyAskedQuestions from "../components/FrequentlyAskedQuestions";
+import FinalCTA from "../components/FinalCTA";
 
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <Hero />
-      <Stats />
-      <Features />
+      <WhyCropGuards />
+      <KeyFeatures />
       <HowItWorks />
-      <StoreOwners />
+      <WhoIsItFor />
+      <Testimonials />
+      <Pricing />
+      <FrequentlyAskedQuestions />
+      <FinalCTA />
       <Footer />
     </div>
   );

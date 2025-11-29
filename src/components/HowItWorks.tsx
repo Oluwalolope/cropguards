@@ -1,74 +1,99 @@
-import { Search, ShoppingCart, CreditCard, Package } from "lucide-react";
-import { motion } from "motion/react";
+import { UserPlus, MapPin, Bell, TrendingUp, ArrowRight } from 'lucide-react';
 
 const HowItWorks = () => {
   const steps = [
     {
-      icon: Search,
-      title: "Search Products",
-      description:
-        "Enter what you need and your location to find nearby stores.",
+      number: '01',
+      icon: UserPlus,
+      title: 'Sign Up & Choose Language',
+      description: 'Create your free account in seconds. Select your preferred language from English, Hausa, Yoruba, Igbo, and more.',
+      color: 'from-emerald-400 to-emerald-600',
     },
     {
-      icon: ShoppingCart,
-      title: "Add to Cart",
-      description:
-        "Browse available items, compare prices, and add to your cart.",
+      number: '02',
+      icon: MapPin,
+      title: 'Set Up Your Farm',
+      description: 'Enter your farm location, size, and soil type. Add details about your current crops and available resources.',
+      color: 'from-blue-400 to-blue-600',
     },
     {
-      icon: CreditCard,
-      title: "Pay Securely",
-      description: "Complete your payment online with our secure checkout.",
+      number: '03',
+      icon: Bell,
+      title: 'Get Real-Time Advice',
+      description: 'Receive personalized recommendations, weather alerts, and planting schedules tailored to your farm.',
+      color: 'from-amber-400 to-amber-600',
     },
     {
-      icon: Package,
-      title: "Pickup & Go",
-      description:
-        "Get notified when ready, show your order code, and pickup instantly.",
+      number: '04',
+      icon: TrendingUp,
+      title: 'Improve Your Crop Yield',
+      description: 'Follow our AI-powered guidance to increase productivity, reduce losses, and maximize your profits.',
+      color: 'from-green-400 to-green-600',
     },
   ];
 
   return (
-    <section
-      id="how-it-works"
-      className="py-16 sm:py-24 bg-linear-to-b from-gray-50 to-white"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-gray-900 mb-4">How It Works</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Get what you need in four simple steps
+          <h2 className="text-4xl md:text-5xl text-gray-900 mb-4">
+            How It Works
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Get started in 4 simple steps
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
-          {steps.map((step, index) => (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              viewport={{ once: true }}
-              key={index}
-              className="relative"
-            >
-              <div className="text-center">
-                <div className="inline-flex w-16 h-16 bg-blue-600 rounded-2xl items-center justify-center mb-4">
-                  <step.icon className="w-8 h-8 text-white" />
-                </div>
-                <div className="relative z-10 bg-white px-4">
-                  <div className="text-sm text-blue-600 mb-2">
-                    Step {index + 1}
+        <div className="relative">
+          {/* Connection Line */}
+          <div className="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-linear-to-r from-emerald-400 via-blue-400 to-green-600 opacity-20"></div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={index} className="relative">
+                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full hover:-translate-y-2">
+                    {/* Number Badge */}
+                    <div className={`absolute -top-4 -left-4 w-12 h-12 bg-linear-to-br ${step.color} rounded-full flex items-center justify-center text-white shadow-lg`}>
+                      {step.number}
+                    </div>
+
+                    {/* Icon */}
+                    <div className={`w-16 h-16 bg-linear-to-br ${step.color} rounded-2xl flex items-center justify-center mb-6 mx-auto`}>
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+
+                    {/* Content */}
+                    <h3 className="text-xl text-gray-900 mb-3 text-center">
+                      {step.title}
+                    </h3>
+                    <p className="text-gray-600 text-center leading-relaxed">
+                      {step.description}
+                    </p>
                   </div>
-                  <h3 className="text-gray-900 mb-2">{step.title}</h3>
-                  <p className="text-gray-600">{step.description}</p>
+
+                  {/* Arrow for desktop */}
+                  {index < steps.length - 1 && (
+                    <div className="hidden lg:block absolute top-24 -right-4 z-10">
+                      <ArrowRight className="w-8 h-8 text-primary-clr/30" />
+                    </div>
+                  )}
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-12">
+          <button className="bg-primary-clr hover:bg-[#329955] text-white px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+            Get Started Now
+          </button>
         </div>
       </div>
     </section>
   );
-};
+}
 
-export default HowItWorks;
+export default HowItWorks

@@ -1,355 +1,387 @@
-import { useState } from "react";
-import { Eye, EyeOff, ShoppingBag, Store } from "lucide-react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
-import Label from "../components/UI/Label";
-import Input from "../components/UI/Input";
-import Textarea from "../components/UI/Textarea";
+import React, { useState } from "react";
+import { User, Phone, MapPin, Mail, Lock, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router";
 import Logo from "../components/Logo";
 
-const SignupPage = () => {
-  const [ searchParams ] = useSearchParams();
-  const userType = searchParams.get('userType');
-  const navigate = useNavigate();
-  const location = useLocation();
+type errors = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
+  confirmPassword?: string;
+  state?: string;
+  farmSize?: string;
+};
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+const SignupPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
-    storeName: "",
-    storeDescription: "",
-    businessAddress: "",
+    state: "",
+    farmSize: "",
+    language: "English",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const [errors, setErrors] = useState<errors>({});
+
+  const nigerianStates = [
+    "Abia",
+    "Adamawa",
+    "Akwa Ibom",
+    "Anambra",
+    "Bauchi",
+    "Bayelsa",
+    "Benue",
+    "Borno",
+    "Cross River",
+    "Delta",
+    "Ebonyi",
+    "Edo",
+    "Ekiti",
+    "Enugu",
+    "Gombe",
+    "Imo",
+    "Jigawa",
+    "Kaduna",
+    "Kano",
+    "Katsina",
+    "Kebbi",
+    "Kogi",
+    "Kwara",
+    "Lagos",
+    "Nasarawa",
+    "Niger",
+    "Ogun",
+    "Ondo",
+    "Osun",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Yobe",
+    "Zamfara",
+    "FCT",
+  ];
+
+  // const languages = ["English", "Hausa", "Yoruba", "Igbo", "Pidgin"];
+  const languages = ["English"];
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    // Clear error for this field
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: "" });
+    }
   };
 
-  const validateSignup = () => {
-    const newErrors: Record<string, string> = {};
+  const validate = () => {
+    const newErrors: errors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    }
-
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "last name is required";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
     }
-
+    if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
     }
-
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
+    if (!formData.state) newErrors.state = "Please select your state";
+    if (!formData.farmSize.trim()) newErrors.farmSize = "Farm size is required";
 
-    if (userType === "seller") {
-      if (!formData.storeName.trim()) {
-        newErrors.storeName = "Store name is required";
-      }
-
-      if (!formData.storeDescription.trim()) {
-        newErrors.storeDescription = "Store description is required";
-      }
-
-      if (!formData.businessAddress.trim()) {
-        newErrors.businessAddress = "Business address is required";
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (validateSignup()) {
-      console.log("Signup successful:", { ...formData, userType });
-      // Save auth
-      sessionStorage.setItem('auth', 'true');
+    const newErrors = validate();
 
-      const defaultPath = userType === 'buyer'? "/buyer-dashboard" : "/seller-dashboard";
-
-      // Redirect to previous page OR default
-      const redirectTo = location.state?.from?.pathname || defaultPath;
-      navigate(redirectTo, { replace: true });
+    if (Object.keys(newErrors).length === 0) {
+      // Success - pass data to dashboard
+      // onSignupComplete(formData);
+    } else {
+      setErrors(newErrors);
     }
   };
 
-  const handleGoogleAuth = () => {
-    console.log("Google OAuth initiated");
-    // Handle Google OAuth here
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
+    <>
       <header className="bg-white border-b border-gray-100">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Logo darkBackground={false} />
+            <Logo />
           </div>
         </nav>
       </header>
+      <div className="min-h-screen bg-linear-to-br from-[#3BAA64]/5 to-[#F5E6D3]/30 py-12">
+        <div className="max-w-2xl mx-auto px-6">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl text-gray-900 mb-2">
+              Join CropGuards Today
+            </h1>
+            <p className="text-lg text-gray-600">
+              Start your journey to smarter farming
+            </p>
+          </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-            <div className="mb-6">
-              <h1 className="text-gray-900 mb-2">Create an Account</h1>
-              <p className="text-gray-600">Join Findr and start shopping smarter</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* User Type Toggle */}
-              <div className="space-y-3">
-                <Label>I want to register as</Label>
-                <div className="flex gap-2 items-center">
-                  <Link to={'?userType=buyer'} className="flex-1">
-                    <button
-                      type="button"
-                      className={`flex w-full items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                        userType === "buyer"
-                          ? "border-blue-600 bg-blue-50 text-blue-700"
-                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                      }`}
-                      onClick={() => {
-                        setErrors({});
-                      }}
-                    >
-                      <ShoppingBag className="w-5 h-5" />
-                      <span>Buyer</span>
-                    </button>
-                  </Link>
-                  <Link to={'?userType=seller'} className="flex-1">
-                    <button
-                      type="button"
-                      className={`flex items-center w-full justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                        userType === "seller"
-                          ? "border-blue-600 bg-blue-50 text-blue-700"
-                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                      }`}
-                      onClick={() => {
-                        setErrors({});
-                      }}
-                    >
-                      <Store className="w-5 h-5" />
-                      <span>Seller</span>
-                    </button>
-                  </Link>
-                </div>
-                {userType === "buyer" && (
-                  <p className="text-sm text-gray-500">
-                    As a buyer, you'll be able to search for products, compare prices, and shop from local stores.
-                  </p>
-                )}
-                {userType === "seller" && (
-                  <p className="text-sm text-gray-500">
-                    As a seller, you'll be able to list your products, manage inventory, and reach more customers.
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="signup-name">{userType === "seller" ? "Owner Name" : "Full Name"}</Label>
-                <Input
-                  id="signup-name"
-                  type="text"
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className={errors.name ? "border-red-500" : ""}
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="signup-email">Email</Label>
-                <Input
-                  id="signup-email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className={errors.email ? "border-red-500" : ""}
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
-                )}
-              </div>
-
-              {userType === "seller" && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-store-name">Store Name</Label>
-                    <Input
-                      id="signup-store-name"
-                      type="text"
-                      placeholder="My Awesome Store"
-                      value={formData.storeName}
-                      onChange={(e) => setFormData({ ...formData, storeName: e.target.value })}
-                      className={errors.storeName ? "border-red-500" : ""}
-                    />
-                    {errors.storeName && (
-                      <p className="text-sm text-red-500">{errors.storeName}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-store-description">Store Description</Label>
-                    <Textarea
-                      id="signup-store-description"
-                      placeholder="Tell customers about your store..."
-                      value={formData.storeDescription}
-                      onChange={(e) => setFormData({ ...formData, storeDescription: e.target.value })}
-                      className={errors.storeDescription ? "border-red-500" : ""}
-                      rows={3}
-                    />
-                    {errors.storeDescription && (
-                      <p className="text-sm text-red-500">{errors.storeDescription}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-business-address">Business Address</Label>
-                    <Input
-                      id="signup-business-address"
-                      type="text"
-                      placeholder="123 Main St, City, State, ZIP"
-                      value={formData.businessAddress}
-                      onChange={(e) => setFormData({ ...formData, businessAddress: e.target.value })}
-                      className={errors.businessAddress ? "border-red-500" : ""}
-                    />
-                    {errors.businessAddress && (
-                      <p className="text-sm text-red-500">{errors.businessAddress}</p>
-                    )}
-                  </div>
-                </>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="signup-password">Password</Label>
+          {/* Form Card */}
+          <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* First Name */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  First Name <span className="text-red-500">*</span>
+                </label>
                 <div className="relative">
-                  <Input
-                    id="signup-password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="At least 8 characters"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className={errors.password ? "border-red-500 pr-10" : "pr-10"}
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] ${
+                      errors.firstName ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your first name"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
+                </div>
+                {errors.firstName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                )}
+              </div>
+
+              {/* last Name */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  Last Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] ${
+                      errors.lastName ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your last name"
+                  />
+                </div>
+                {errors.lastName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] ${
+                      errors.phone ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="+234 800 000 0000"
+                  />
+                </div>
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Minimum 6 characters"
+                  />
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  Confirm Password <span className="text-red-500">*</span>
+                </label>
                 <div className="relative">
-                  <Input
-                    id="signup-confirm-password"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Re-enter your password"
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="password"
+                    name="confirmPassword"
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className={errors.confirmPassword ? "border-red-500 pr-10" : "pr-10"}
+                    onChange={handleChange}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] ${
+                      errors.confirmPassword
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="Re-enter your password"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </div>
 
-              <button type="submit" className="w-full text-white bg-black hover:bg-black/80 py-2 rounded-md cursor-pointer" >
-                Create Account
-              </button>
-
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+              {/* State */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  State <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <select
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] appearance-none bg-white ${
+                      errors.state ? "border-red-500" : "border-gray-300"
+                    }`}
+                  >
+                    <option value="">Select your state</option>
+                    {nigerianStates.map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-gray-500">Or continue with</span>
-                </div>
+                {errors.state && (
+                  <p className="text-red-500 text-sm mt-1">{errors.state}</p>
+                )}
               </div>
 
-              <button
-                type="button"
-                className="w-full border border-neutral-300 rounded-md flex justify-center items-center gap-2 py-3 cursor-pointer hover:bg-neutral-300/25 transition-all duration-300 ease-out"
-                onClick={handleGoogleAuth}
-              >
-                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  />
-                </svg>
-                Sign up with Google
-              </button>
+              {/* Farm Size */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  Farm Size (hectares) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="farmSize"
+                  value={formData.farmSize}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] ${
+                    errors.farmSize ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder="e.g., 2.5"
+                />
+                {errors.farmSize && (
+                  <p className="text-red-500 text-sm mt-1">{errors.farmSize}</p>
+                )}
+              </div>
 
-              <p className="text-center text-sm text-gray-600 mt-4">
-                Already have an account?{" "}
-                <Link
-                  to="/login"
-                  className="text-blue-600 hover:text-blue-700"
+              {/* Language */}
+              <div>
+                <label className="block text-gray-700 mb-2">
+                  Preferred Language
+                </label>
+                <select
+                  name="language"
+                  value={formData.language}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3BAA64] appearance-none bg-white"
                 >
-                  Login
-                </Link>
-              </p>
+                  {languages.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {lang}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-[#3BAA64] hover:bg-[#329955] text-white py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-lg"
+              >
+                Create Account
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </form>
+
+            {/* Login Link */}
+            <div className="mt-6 text-center text-gray-600">
+              Already have an account?{" "}
+              <button
+                onClick={() => navigate("/login")}
+                className="text-[#3BAA64] hover:underline"
+              >
+                Login here
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
-}
+};
 
 export default SignupPage;
