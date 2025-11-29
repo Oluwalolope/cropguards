@@ -17,7 +17,7 @@ const Pricing = () => {
       ],
       cta: 'Start Free',
       popular: false,
-      gradient: 'from-gray-400 to-gray-600',
+      color: 'bg-gray-500',
     },
     {
       name: 'Pro Farmer',
@@ -37,7 +37,7 @@ const Pricing = () => {
       ],
       cta: 'Start 7-Day Free Trial',
       popular: true,
-      gradient: 'from-[#3BAA64] to-[#2d8b51]',
+      color: 'bg-[#3BAA64]',
     },
     {
       name: 'Enterprise',
@@ -57,7 +57,7 @@ const Pricing = () => {
       ],
       cta: 'Contact Sales',
       popular: false,
-      gradient: 'from-purple-400 to-purple-600',
+      color: 'bg-purple-500',
     },
   ];
 
@@ -93,7 +93,7 @@ const Pricing = () => {
                 )}
 
                 {/* Icon */}
-                <div className={`w-16 h-16 bg-linear-to-br ${plan.gradient} rounded-2xl flex items-center justify-center mb-6 mx-auto`}>
+                <div className={`w-16 h-16 ${plan.color} rounded-2xl flex items-center justify-center mb-6 mx-auto`}>
                   <Icon className="w-8 h-8 text-white" />
                 </div>
 
@@ -128,7 +128,7 @@ const Pricing = () => {
                 <div className="space-y-4">
                   {plan.features.map((feature, idx) => (
                     <div key={idx} className="flex items-start gap-3">
-                      <div className={`w-5 h-5 rounded-full bg-linear-to-br ${plan.gradient} flex items-center justify-center shrink-0 mt-0.5`}>
+                      <div className={`w-5 h-5 rounded-full ${plan.color} flex items-center justify-center shrink-0 mt-0.5`}>
                         <Check className="w-3 h-3 text-white" />
                       </div>
                       <span className="text-gray-700">{feature}</span>

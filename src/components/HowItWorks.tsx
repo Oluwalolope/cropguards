@@ -7,28 +7,28 @@ const HowItWorks = () => {
       icon: UserPlus,
       title: 'Sign Up & Choose Language',
       description: 'Create your free account in seconds. Select your preferred language from English, Hausa, Yoruba, Igbo, and more.',
-      color: 'from-emerald-400 to-emerald-600',
+      color: 'bg-emerald-600',
     },
     {
       number: '02',
       icon: MapPin,
       title: 'Set Up Your Farm',
       description: 'Enter your farm location, size, and soil type. Add details about your current crops and available resources.',
-      color: 'from-blue-400 to-blue-600',
+      color: 'bg-blue-600',
     },
     {
       number: '03',
       icon: Bell,
       title: 'Get Real-Time Advice',
       description: 'Receive personalized recommendations, weather alerts, and planting schedules tailored to your farm.',
-      color: 'from-amber-400 to-amber-600',
+      color: 'bg-amber-600',
     },
     {
       number: '04',
       icon: TrendingUp,
       title: 'Improve Your Crop Yield',
       description: 'Follow our AI-powered guidance to increase productivity, reduce losses, and maximize your profits.',
-      color: 'from-green-400 to-green-600',
+      color: 'bg-green-600',
     },
   ];
 
@@ -55,12 +55,12 @@ const HowItWorks = () => {
                 <div key={index} className="relative">
                   <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full hover:-translate-y-2">
                     {/* Number Badge */}
-                    <div className={`absolute -top-4 -left-4 w-12 h-12 bg-linear-to-br ${step.color} rounded-full flex items-center justify-center text-white shadow-lg`}>
+                    <div className={`absolute -top-4 -left-4 w-12 h-12 ${step.color} rounded-full flex items-center justify-center text-white shadow-lg`}>
                       {step.number}
                     </div>
 
                     {/* Icon */}
-                    <div className={`w-16 h-16 bg-linear-to-br ${step.color} rounded-2xl flex items-center justify-center mb-6 mx-auto`}>
+                    <div className={`w-16 h-16 ${step.color} rounded-2xl flex items-center justify-center mb-6 mx-auto`}>
                       <Icon className="w-8 h-8 text-white" />
                     </div>
 

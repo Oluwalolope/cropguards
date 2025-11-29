@@ -1,4 +1,4 @@
-import { Sun, Cloud, Droplets } from "lucide-react";
+import { Sun } from "lucide-react";
 import ImageWithFallback from "./UI/ImageWithFallback";
 // import { motion } from "motion/react";
 import { useNavigate } from "react-router";
@@ -21,24 +21,13 @@ const Hero = () => {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => navigate('register')}
-                className="bg-[#3BAA64] hover:bg-[#329955] text-white px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer"
+                className="w-full md:w-auto bg-[#3BAA64] hover:bg-[#329955] text-white px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer"
               >
                 Get Started
               </button>
-              <button className="bg-white hover:bg-gray-50 text-[#3BAA64] px-8 py-4 rounded-full border-2 border-[#3BAA64] transition-all duration-300 cursor-pointer">
+              <button className="w-full md:w-auto bg-white hover:bg-gray-50 text-[#3BAA64] px-8 py-4 rounded-full border-2 border-[#3BAA64] transition-all duration-300 cursor-pointer">
                 See How It Works
               </button>
-            </div>
-            
-            {/* Floating Weather Icons */}
-            <div className="hidden md:block absolute -right-12 top-1/4 animate-float">
-              <Cloud className="w-12 h-12 text-[#3BAA64]/30" />
-            </div>
-            <div className="hidden md:block absolute -right-8 top-1/2 animate-float-delayed">
-              <Sun className="w-10 h-10 text-amber-400/40" />
-            </div>
-            <div className="hidden md:block absolute -right-16 top-3/4 animate-float">
-              <Droplets className="w-8 h-8 text-blue-400/30" />
             </div>
           </div>
 

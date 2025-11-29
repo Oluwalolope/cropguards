@@ -64,7 +64,7 @@ const KeyFeatures = () => {
               >
                 {/* Content */}
                 <div className={`${!isEven ? 'md:order-2' : ''}`}>
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex flex-col text-center md:flex-row md:text-start items-center gap-3 mb-4">
                     <div className="w-12 h-12 bg-primary-clr rounded-xl flex items-center justify-center">
                       <Icon className="w-6 h-6 text-white" />
                     </div>
@@ -76,7 +76,7 @@ const KeyFeatures = () => {
 
                   {/* Stats for Crop Recommendations */}
                   {feature.stats && (
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {feature.stats.map((stat, idx) => (
                         <div key={idx} className="bg-white rounded-xl p-4 shadow-md">
                           <p className="text-sm text-gray-500 mb-1">{stat.label}</p>
