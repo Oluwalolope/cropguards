@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { Mail, Lock, ChevronRight } from "lucide-react";
+import { Mail, Lock, ChevronRight, EyeOff, Eye } from "lucide-react";
 import { useNavigate } from "react-router";
 import Logo from "../components/Logo";
 
 type errors = {
   email?: string;
   password?: string;
+  invalidLogin?: string;
 };
 
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -50,10 +52,20 @@ const LoginPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = validate();
+    let storedUser = {
+      email: '',
+      password: ''
+    };
 
-    if (Object.keys(newErrors).length === 0) {
-      // Success - pass data to dashboard
-      // onSignupComplete(formData);
+    if (localStorage.getItem('userData')) {
+      storedUser = JSON.parse(localStorage.getItem('userData')!);
+    }
+    const isValidUser = formData.email === storedUser.email && formData.password === storedUser.password
+
+    if (Object.keys(newErrors).length === 0 && isValidUser ) {
+      navigate('/farmer-dashboard');
+    } else if (Object.keys(newErrors).length === 0 && !isValidUser) {
+      setErrors({ invalidLogin: 'Incorrect Login details! Try again' });
     } else {
       setErrors(newErrors);
     }
@@ -114,7 +126,7 @@ const LoginPage = () => {
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
-                    type="password"
+                    type={showPassword? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
@@ -123,12 +135,26 @@ const LoginPage = () => {
                     }`}
                     placeholder="Minimum 6 characters"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
                 {errors.password && (
                   <p className="text-red-500 text-sm mt-1">{errors.password}</p>
                 )}
               </div>
 
+                {errors.invalidLogin && (
+                  <p className="text-red-500 text-sm mt-1">{errors.invalidLogin}</p>
+                )}
 
               {/* Submit Button */}
               <button

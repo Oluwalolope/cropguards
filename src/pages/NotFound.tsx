@@ -66,7 +66,7 @@ const NotFoundPage = () => {
               <Link to="/login" className="text-sm text-blue-600 hover:text-blue-700">
                 Login
               </Link>
-              <Link to="/register?userType=buyer" className="text-sm text-blue-600 hover:text-blue-700">
+              <Link to="/register" className="text-sm text-blue-600 hover:text-blue-700">
                 Sign Up
               </Link>
             </div>

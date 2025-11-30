@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { User, Phone, MapPin, Mail, Lock, ChevronRight } from "lucide-react";
+import {
+  User,
+  Phone,
+  MapPin,
+  Mail,
+  Lock,
+  ChevronRight,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useNavigate } from "react-router";
 import Logo from "../components/Logo";
 
@@ -16,6 +25,7 @@ type errors = {
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -92,7 +102,8 @@ const SignupPage = () => {
   const validate = () => {
     const newErrors: errors = {};
 
-    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name is required";
     if (!formData.lastName.trim()) newErrors.lastName = "last name is required";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -121,6 +132,8 @@ const SignupPage = () => {
     if (Object.keys(newErrors).length === 0) {
       // Success - pass data to dashboard
       // onSignupComplete(formData);
+      localStorage.setItem('userData', JSON.stringify(formData));
+      navigate('/farmer-dashboard');
     } else {
       setErrors(newErrors);
     }
@@ -169,7 +182,9 @@ const SignupPage = () => {
                   />
                 </div>
                 {errors.firstName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.firstName}
+                  </p>
                 )}
               </div>
 
@@ -250,7 +265,7 @@ const SignupPage = () => {
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
@@ -259,6 +274,17 @@ const SignupPage = () => {
                     }`}
                     placeholder="Minimum 6 characters"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
                 {errors.password && (
                   <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -273,7 +299,7 @@ const SignupPage = () => {
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
@@ -284,6 +310,17 @@ const SignupPage = () => {
                     }`}
                     placeholder="Re-enter your password"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm mt-1">

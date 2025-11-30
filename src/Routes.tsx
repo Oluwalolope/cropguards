@@ -7,7 +7,7 @@ import ForgotPasswordPage from './pages/ForgotPassword';
 import { lazy, Suspense } from 'react';
 import Loader from './components/Loading';
 
-const SellerDashBoard = lazy(() => import('./pages/SellerDashboard'));
+const FarmerDashBoard = lazy(() => import('./pages/FarmerDashboard'));
 
 const router = createBrowserRouter([
   {
@@ -35,13 +35,13 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
   },
   {
-    path: '/seller-dashboard',
+    path: '/farmer-dashboard',
     element: 
     <Suspense fallback={<Loader />}>
-      <SellerDashBoard />
+      <FarmerDashBoard />
     </Suspense>,
     errorElement: <NotFoundPage />,
-    loader: () => import('./pages/SellerDashboard').then((module) => module.loader()),
+    loader: () => import('./pages/FarmerDashboard').then((module) => module.loader()),
   },
 ]);
 
