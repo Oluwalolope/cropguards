@@ -3,7 +3,6 @@ import { createBrowserRouter } from 'react-router';
 import NotFoundPage from './pages/NotFound';
 import LoginPage from './pages/Login';
 import SignupPage from './pages/SignUp';
-import ForgotPasswordPage from './pages/ForgotPassword';
 import { lazy, Suspense } from 'react';
 import Loader from './components/Loading';
 
@@ -18,15 +17,6 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: '/logout',
-    loader: () => import('./pages/LogOut').then((module) => module.loader()),
-  },
-  {
-    path: '/forgot-password',
-    element: <ForgotPasswordPage />,
     errorElement: <NotFoundPage />,
   },
   {

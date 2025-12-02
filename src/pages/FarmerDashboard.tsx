@@ -13,28 +13,65 @@ import {
   Zap,
   X,
   Menu,
+  Space,
 } from "lucide-react";
-import { useLoaderData, useNavigate } from "react-router";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+import { redirect, useNavigate } from "react-router";
 import fetchLocation from "../util/fetchLocation";
 import getWeatherData from "../util/getWeatherData";
-import type { DailyForecast } from "../util/transformWeatherData";
-import { useState } from "react";
+import type { CurrentForecast, DailyForecast } from "../util/transformWeatherData";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import useAuth from "../hooks/useAuth";
+
+type weatherData = {
+  currentForecast: CurrentForecast;
+  dailyForecast: DailyForecast[];
+}
 
 const FarmerDashboard = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [weatherData, setWeatherData] = useState<weatherData>();
 
   const handleClick = () => {
     setIsMobileMenuOpen((prevIsMobileMenuOpen) => !prevIsMobileMenuOpen);
   };
-  const data = useLoaderData();
-
-  const { userData, weatherData } = data;
-
-  const { currentForecast, dailyForecast } = weatherData;
-  const TodayWeatherIcon = currentForecast.forecast;
-
+  
   const navigate = useNavigate();
+  const { user, setAuthStatus } = useAuth();
+
+  const handleLogout = () => {
+    setAuthStatus(false);
+    navigate('/');
+  }
+
+  useEffect(() => {
+    const farmerLocation = `${user.state}, Nigeria`;
+    const searchURL = `https://geocoding-api.open-meteo.com/v1/search?name=${farmerLocation}&count=5&language=en&format=json`;
+
+    const fetchWeather = async () => {
+      const location = await fetchLocation(searchURL);
+
+      const weatherData = await getWeatherData(
+        location!.latitude,
+        location!.longitude
+      );
+
+      
+      setWeatherData(weatherData)
+    }
+
+    fetchWeather();
+  }, [user.state])
+
+
+  let TodayWeatherIcon = Space;
+  
+  if (weatherData) {
+    TodayWeatherIcon = weatherData.currentForecast.forecast;
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -65,12 +102,12 @@ const FarmerDashboard = () => {
                   <User className="w-6 h-6 text-[#3BAA64]" />
                 </div>
                 <div className="hidden md:block">
-                  <p className="text-sm text-gray-900">{userData.firstName}</p>
-                  <p className="text-xs text-gray-500">{userData.state}</p>
+                  <p className="text-sm text-gray-900">{user.first_name}</p>
+                  <p className="text-xs text-gray-500">{user.state}</p>
                 </div>
               </div>
               <button
-                onClick={() => navigate("/logout")}
+                onClick={handleLogout}
                 className="p-2 text-gray-600 hover:text-red-500 transition-colors"
                 title="Logout"
               >
@@ -118,10 +155,10 @@ const FarmerDashboard = () => {
                       </div>
                       <div className="block">
                         <p className="text-sm text-gray-900">
-                          {userData.firstName}
+                          {user.first_name}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {userData.state}
+                          {user.state}
                         </p>
                       </div>
                     </div>
@@ -145,7 +182,7 @@ const FarmerDashboard = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl text-gray-900 mb-2">
-            Good Morning, {userData.firstName}
+            Good Morning, {user.username}
           </h2>
           <p className="text-gray-600">
             Here&apos;s what&apos;s happening with your farm today
@@ -175,30 +212,34 @@ const FarmerDashboard = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Weather Today */}
           <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            {weatherData && <>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-gray-600">{currentForecast.day}</h3>
-              <TodayWeatherIcon
-                className={`w-8 h-8 ${currentForecast.color}`}
-              />
+              <h3 className="text-gray-600">{weatherData?.currentForecast.day}</h3>
+              {weatherData && <TodayWeatherIcon
+                className={`w-8 h-8 ${weatherData.currentForecast.color}`}
+              />}
             </div>
             <div className="flex items-baseline gap-2 mb-2">
               <span className="text-4xl text-gray-900">
-                {currentForecast.apparentTemperature}°C
+                {weatherData?.currentForecast.apparentTemperature}°C
               </span>
               <span className="text-gray-500 capitalize">
-                {currentForecast.weatherCondition}
+                {weatherData?.currentForecast.weatherCondition}
               </span>
             </div>
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-1">
                 <Droplets className="w-4 h-4" />
-                <span>{currentForecast.humidity}%</span>
+                <span>{weatherData?.currentForecast.humidity}%</span>
               </div>
               <div className="flex items-center gap-1">
                 <Wind className="w-4 h-4" />
-                <span>{currentForecast.windSpeed} km/h</span>
+                <span>{weatherData?.currentForecast.windSpeed} km/h</span>
               </div>
             </div>
+            </>
+            }
+            {!weatherData && <Skeleton count={5} />}
           </div>
 
           {/* Soil Moisture */}
@@ -229,11 +270,11 @@ const FarmerDashboard = () => {
             </div>
             <div className="mb-2">
               <span className="text-4xl text-gray-900">
-                {userData.farmSize}
+                {user.farm_size}
               </span>
               <span className="text-gray-600 ml-2">ha</span>
             </div>
-            <p className="text-sm text-gray-500">{userData.state} State</p>
+            <p className="text-sm text-gray-500 capitalize">{user.state} State</p>
           </div>
 
           {/* Active Crops */}
@@ -313,8 +354,8 @@ const FarmerDashboard = () => {
               <h3 className="text-xl text-gray-900 mb-6">
                 7-Day Weather Forecast
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3">
-                {dailyForecast.map((day: DailyForecast, index: number) => {
+              {weatherData && <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3">
+                {weatherData.dailyForecast.map((day: DailyForecast, index: number) => {
                   const Icon = day.forecast;
                   return (
                     <div
@@ -327,7 +368,8 @@ const FarmerDashboard = () => {
                     </div>
                   );
                 })}
-              </div>
+              </div>}
+              {!weatherData && <Skeleton count={5} />}
             </div>
           </div>
 
@@ -408,19 +450,16 @@ const FarmerDashboard = () => {
 export default FarmerDashboard;
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const loader = async () => {
-  const userData = JSON.parse(localStorage.getItem("userData")!);
+export const loader = () => {
+  let isAuthenticated = false;
 
-  const farmerLocation = `${userData.state}, Nigeria`;
-
-  const searchURL = `https://geocoding-api.open-meteo.com/v1/search?name=${farmerLocation}&count=5&language=en&format=json`;
-
-  const location = await fetchLocation(searchURL);
-
-  const weatherData = await getWeatherData(
-    location!.latitude,
-    location!.longitude
-  );
-
-  return { userData, weatherData };
+  if (localStorage.getItem('isAuthenticated')) {
+    isAuthenticated = JSON.parse(localStorage.getItem('isAuthenticated')!);
+  }
+  
+  if (isAuthenticated) {
+    return
+  } else {
+    return redirect('/login')
+  }
 };

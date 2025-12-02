@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import { Mail, Lock, ChevronRight, EyeOff, Eye } from "lucide-react";
 import { useNavigate } from "react-router";
 import Logo from "../components/Logo";
+import useAuth from "../hooks/useAuth";
 
 type errors = {
   email?: string;
   password?: string;
-  invalidLogin?: string;
 };
 
 const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [serverMessage, setServerMessage] = useState<string>('');
   const navigate = useNavigate();
+  const { setAuthStatus, handleUserUpdate } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -49,24 +52,60 @@ const LoginPage = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = validate();
-    let storedUser = {
-      email: '',
-      password: ''
-    };
+    
+    if (Object.keys(newErrors).length === 0) {
+      setIsSubmitting(true);
 
-    if (localStorage.getItem('userData')) {
-      storedUser = JSON.parse(localStorage.getItem('userData')!);
-    }
-    const isValidUser = formData.email === storedUser.email && formData.password === storedUser.password
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const authData = {
+        email: formData.email,
+        password: formData.password
+      };
 
-    if (Object.keys(newErrors).length === 0 && isValidUser ) {
-      navigate('/farmer-dashboard');
-    } else if (Object.keys(newErrors).length === 0 && !isValidUser) {
-      setErrors({ invalidLogin: 'Incorrect Login details! Try again' });
-    } else {
+      setServerMessage("");
+
+      const response = await fetch(`${apiUrl}/auth/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(authData),
+      });
+
+
+      setIsSubmitting(false);
+
+      if (response.status === 422 || response.status === 401) {
+        setServerMessage(
+          "Invalid email or password."
+        );
+        return response;
+      }
+      
+      if (!response.ok) {
+        setServerMessage("We’re experiencing a technical issue. Please try again shortly.");
+      }
+
+      const resData = await response.json();
+
+      const userData = {
+        username: resData.user.username,
+        first_name: resData.user.first_name,
+        last_name: resData.user.last_name,
+        email: resData.user.email,
+        phone_number: resData.user.phone_number,
+        state: resData.user.state,
+        farm_size: resData.user.farm_size,
+      };
+
+      handleUserUpdate(userData);
+      setAuthStatus(true);
+
+      navigate('/farmer-dashboard', { replace: true });
+    }  else {
       setErrors(newErrors);
     }
   };
@@ -152,17 +191,18 @@ const LoginPage = () => {
                 )}
               </div>
 
-                {errors.invalidLogin && (
-                  <p className="text-red-500 text-sm mt-1">{errors.invalidLogin}</p>
+                {serverMessage && (
+                  <p className="text-red-500 text-sm mt-1">{serverMessage}</p>
                 )}
 
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-[#3BAA64] hover:bg-[#329955] text-white py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-lg"
+                disabled={isSubmitting}
+                className="w-full disabled:bg-gray-500 bg-[#3BAA64] hover:bg-[#329955] text-white py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-lg"
               >
-                Log In
-                <ChevronRight className="w-5 h-5" />
+                {isSubmitting ? 'Logging in...' : 'Log In'}
+                {!isSubmitting && <ChevronRight className="w-5 h-5" />}
               </button>
             </form>
 

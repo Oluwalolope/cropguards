@@ -32,7 +32,7 @@ interface WeatherApiResponse {
 }
 
 // Output types
-interface CurrentForecast {
+export interface CurrentForecast {
   forecast: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
   weatherCondition: string;
   color: string;

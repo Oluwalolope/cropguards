@@ -13,14 +13,11 @@ const getWeatherData = async (
       throw new Error("Failed to get weather data");
     }
 
-    // context.handleChange("isValidLocation", true);
 
     const { currentForecast, dailyForecast } = transformWeatherData(weatherResult);
     return { currentForecast, dailyForecast }
   } catch (error) {
     console.log(error);
-    // context.handleChange("isValidLocation", false);
-    // context.handleChange("isServerWorking", false);
   }
 };
 

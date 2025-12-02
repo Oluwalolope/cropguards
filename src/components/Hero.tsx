@@ -16,7 +16,7 @@ const Hero = () => {
               Farm Smarter.<br />Grow More.
             </h1>
             <p className="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed">
-              Real-time weather alerts, soil insights, and AI-powered crop guidance — all in one simple app for farmers.
+              Real-time weather alerts, soil insights, and AI-powered crop guidance. All in one simple app for farmers.
             </p>
             <div className="flex flex-wrap gap-4">
               <button
@@ -25,9 +25,9 @@ const Hero = () => {
               >
                 Get Started
               </button>
-              <button className="w-full md:w-auto bg-white hover:bg-gray-50 text-[#3BAA64] px-8 py-4 rounded-full border-2 border-[#3BAA64] transition-all duration-300 cursor-pointer">
+              <a href="#how-it-works" className="w-full md:w-auto bg-white hover:bg-gray-50 text-[#3BAA64] px-8 py-4 rounded-full border-2 border-[#3BAA64] transition-all duration-300 cursor-pointer text-center">
                 See How It Works
-              </button>
+              </a>
             </div>
           </div>
 
