@@ -163,7 +163,7 @@ const FarmerDashboard = () => {
                       </div>
                     </div>
                     <button
-                      onClick={() => navigate("/logout")}
+                      onClick={handleLogout}
                       className="p-2 text-red-500 inline-flex items-center justify-between"
                       title="Logout"
                     >
