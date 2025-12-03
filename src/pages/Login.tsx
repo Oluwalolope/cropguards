@@ -78,7 +78,7 @@ const LoginPage = () => {
 
       setIsSubmitting(false);
 
-      if (response.status === 422 || response.status === 401) {
+      if (response.status === 422 || response.status === 401 || response.status === 400 ) {
         setServerMessage(
           "Invalid email or password."
         );
